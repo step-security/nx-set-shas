@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2024"],
+    "module": "commonjs",
+    "target": "ES2024",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  }
+}
