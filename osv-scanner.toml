@@ -1,0 +1,19 @@
+[[IgnoredVulns]]
+id = "GHSA-2mjp-6q6p-2qxm"
+reason = "Affects undici (transitive dep of @actions/github). Not exploitable — undici is used internally for GitHub API calls and is not exposed to user-controlled input."
+
+[[IgnoredVulns]]
+id = "GHSA-4992-7rv2-5pvq"
+reason = "Affects undici (transitive dep of @actions/github). Not exploitable — undici is used internally for GitHub API calls and is not exposed to user-controlled input."
+
+[[IgnoredVulns]]
+id = "GHSA-g9mf-h72j-4rw9"
+reason = "Affects undici (transitive dep of @actions/github). Not exploitable — undici is used internally for GitHub API calls and is not exposed to user-controlled input."
+
+[[IgnoredVulns]]
+id = "GHSA-v9p9-hfj2-hcw8"
+reason = "Affects undici (transitive dep of @actions/github). Not exploitable — undici is used internally for GitHub API calls and is not exposed to user-controlled input."
+
+[[IgnoredVulns]]
+id = "GHSA-vrm6-8vpv-qv8q"
+reason = "Affects undici (transitive dep of @actions/github). Not exploitable — undici is used internally for GitHub API calls and is not exposed to user-controlled input."
