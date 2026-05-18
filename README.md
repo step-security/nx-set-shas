@@ -198,4 +198,5 @@ This action enables you to find:
 [MIT](http://opensource.org/licenses/MIT)
 
 Copyright (c) 2021-present Narwhal Technologies Inc.
+
 Copyright (c) 2026 StepSecurity.

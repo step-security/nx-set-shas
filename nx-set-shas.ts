@@ -89,7 +89,6 @@ let BASE_SHA: string;
     !github.context.payload.pull_request.merged
   ) {
     // Both pull_request and pull_request_target events have the same payload structure
-    // https://github.com/nrwl/nx-set-shas/issues/186
     const pullRequestEventName = 'pull_request';
     const baseResult = spawnSync(
       'git',
