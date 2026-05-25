@@ -11,7 +11,7 @@
     "build": "ncc build nx-set-shas.ts -o dist --license licenses.txt"
   },
   "dependencies": {
-    "@actions/core": "^2.0.0",
+    "@actions/core": "^3.0.1",
     "@actions/github": "^6.0.0",
     "axios": "^1.16.1"
   },
