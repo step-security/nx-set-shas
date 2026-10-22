@@ -1,0 +1,17 @@
+{
+  "$comment": "Managed automatically when syncing with upstream. Do not edit by hand.",
+  "schema_version": 1,
+  "onboarding_type": "copied",
+  "action_type": "node",
+  "upstream": {
+    "repository": "nrwl/nx-set-shas",
+    "synced_tag": "v5.1.0",
+    "synced_commit": "e602fada7ad5987b0f7b1905e7a99ea1c661514c",
+    "archived": false
+  },
+  "build": {
+    "package_manager": "npm@11.12.1",
+    "node_version": "24",
+    "script": "build"
+  }
+}
