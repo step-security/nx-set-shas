@@ -1,7 +1,8 @@
 {
-  "version": "5.0.1",
+  "version": "5.1.0",
   "private": true,
   "author": "step-security",
+  "publisher": "step-security",
   "homepage": "https://github.com/step-security/nx-set-shas#readme",
   "bugs": {
     "url": "https://github.com/step-security/nx-set-shas/issues"
@@ -13,7 +14,7 @@
   "dependencies": {
     "@actions/core": "^2.0.0",
     "@actions/github": "^6.0.0",
-    "axios": "^1.16.1"
+    "axios": "^1.20.0"
   },
   "devDependencies": {
     "@types/node": "^24.12.0",
@@ -21,6 +22,12 @@
     "typescript": "^5.8.3"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24",
+    "npm": ">=11"
+  },
+  "name": "@step-security/nx-set-shas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/step-security/nx-set-shas.git"
   }
 }
