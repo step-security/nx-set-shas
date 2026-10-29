@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["ES2024"],
+    "target": "es2015",
     "module": "commonjs",
-    "target": "ES2024",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
+    "moduleResolution": "node",
     "types": ["node"]
   }
 }

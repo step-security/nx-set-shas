@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { GitHub } from '@actions/github/lib/utils';
+import type { getOctokit } from '@actions/github';
 import axios, { isAxiosError } from 'axios';
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
@@ -12,13 +12,17 @@ const {
 } = github.context;
 process.env.GITHUB_TOKEN = core.getInput('gh-token');
 const mainBranchName = core.getInput('main-branch-name');
-const errorOnNoSuccessfulWorkflow = core.getBooleanInput('error-on-no-successful-workflow');
+const errorOnNoSuccessfulWorkflow = core.getBooleanInput(
+  'error-on-no-successful-workflow',
+);
 const lastSuccessfulEvent = core.getInput('last-successful-event');
 const workingDirectory = core.getInput('working-directory');
 const workflowId = core.getInput('workflow-id');
 const fallbackSHA = core.getInput('fallback-sha');
 const remote = core.getInput('remote');
-const usePreviousMergeGroupCommit = core.getBooleanInput('use-previous-merge-group-commit');
+const usePreviousMergeGroupCommit = core.getBooleanInput(
+  'use-previous-merge-group-commit',
+);
 const defaultWorkingDirectory = '.';
 
 async function validateSubscription() {
@@ -32,12 +36,14 @@ async function validateSubscription() {
 
   const upstream = 'nrwl/nx-set-shas';
   const action = process.env.GITHUB_ACTION_REPOSITORY;
-  const docsUrl = 'https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions';
+  const docsUrl =
+    'https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions';
 
   core.info('');
   core.info('\u001b[1;36mStepSecurity Maintained Action\u001b[0m');
   core.info(`Secure drop-in replacement for ${upstream}`);
-  if (repoPrivate === false) core.info('\u001b[32m✓ Free for public repositories\u001b[0m');
+  if (repoPrivate === false)
+    core.info('\u001b[32m✓ Free for public repositories\u001b[0m');
   core.info(`\u001b[36mLearn more:\u001b[0m ${docsUrl}`);
   core.info('');
 
@@ -75,7 +81,9 @@ let BASE_SHA: string;
       process.chdir(workingDirectory);
     } else {
       process.stdout.write('\n');
-      process.stdout.write(`WARNING: Working directory '${workingDirectory}' doesn't exist.\n`);
+      process.stdout.write(
+        `WARNING: Working directory '${workingDirectory}' doesn't exist.\n`,
+      );
     }
   }
 
@@ -92,7 +100,11 @@ let BASE_SHA: string;
     const pullRequestEventName = 'pull_request';
     const baseResult = spawnSync(
       'git',
-      ['merge-base', `${remote}/${github.context.payload[pullRequestEventName].base.ref}`, 'HEAD'],
+      [
+        'merge-base',
+        `${remote}/${github.context.payload[pullRequestEventName].base.ref}`,
+        'HEAD',
+      ],
       { encoding: 'utf-8' },
     );
     BASE_SHA = baseResult.stdout;
@@ -137,11 +149,16 @@ let BASE_SHA: string;
           });
 
           if (baseRes.status !== 0 || !baseRes.stdout) {
-            const emptyTreeRes = spawnSync('git', ['hash-object', '-t', 'tree', '/dev/null'], {
-              encoding: 'utf-8',
-            });
+            const emptyTreeRes = spawnSync(
+              'git',
+              ['hash-object', '-t', 'tree', '/dev/null'],
+              {
+                encoding: 'utf-8',
+              },
+            );
             // 4b825dc642cb6eb9a060e54bf8d69288fbee4904 is the expected result of hashing the empty tree
-            BASE_SHA = emptyTreeRes.stdout ?? `4b825dc642cb6eb9a060e54bf8d69288fbee4904`;
+            BASE_SHA =
+              emptyTreeRes.stdout ?? `4b825dc642cb6eb9a060e54bf8d69288fbee4904`;
             process.stdout.write(
               `HEAD~1 does not exist. We are therefore defaulting to use the empty git tree hash as BASE.\n`,
             );
@@ -227,22 +244,28 @@ async function findSuccessfulCommit(
       })
       .then(({ data: { workflow_id } }) => workflow_id);
     process.stdout.write('\n');
-    process.stdout.write(`Workflow Id not provided. Using workflow '${workflow_id}'\n`);
+    process.stdout.write(
+      `Workflow Id not provided. Using workflow '${workflow_id}'\n`,
+    );
   }
   // fetch all workflow runs on a given repo/branch/workflow with push and success
   const shas = await octokit
-    .request(`GET /repos/${owner}/${repo}/actions/workflows/${workflow_id}/runs`, {
-      owner,
-      repo,
-      // on some workflow runs we do not have branch property
-      branch:
-        lastSuccessfulEvent === 'push' || lastSuccessfulEvent === 'workflow_dispatch'
-          ? branch
-          : undefined,
-      workflow_id,
-      event: lastSuccessfulEvent,
-      status: 'success',
-    })
+    .request(
+      `GET /repos/${owner}/${repo}/actions/workflows/${workflow_id}/runs`,
+      {
+        owner,
+        repo,
+        // on some workflow runs we do not have branch property
+        branch:
+          lastSuccessfulEvent === 'push' ||
+          lastSuccessfulEvent === 'workflow_dispatch'
+            ? branch
+            : undefined,
+        workflow_id,
+        event: lastSuccessfulEvent,
+        status: 'success',
+      },
+    )
     .then(({ data: { workflow_runs } }) =>
       workflow_runs.map((run: { head_sha: any }) => run.head_sha),
     );
@@ -254,7 +277,7 @@ async function findSuccessfulCommit(
  * Get first existing commit
  */
 async function findExistingCommit(
-  octokit: InstanceType<typeof GitHub>,
+  octokit: ReturnType<typeof getOctokit>,
   branchName: string,
   shas: string[],
 ): Promise<string | undefined> {
@@ -270,7 +293,7 @@ async function findExistingCommit(
  * Check if given commit is valid
  */
 async function commitExists(
-  octokit: InstanceType<typeof GitHub>,
+  octokit: ReturnType<typeof getOctokit>,
   branchName: string,
   commitSha: string,
 ): Promise<boolean> {
@@ -294,7 +317,9 @@ async function commitExists(
       per_page: 100,
     });
 
-    return commits.data.some((commit: { sha: string }) => commit.sha === commitSha);
+    return commits.data.some(
+      (commit: { sha: string }) => commit.sha === commitSha,
+    );
   } catch {
     return false;
   }

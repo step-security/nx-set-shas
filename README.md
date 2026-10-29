@@ -1,11 +1,7 @@
 [![StepSecurity Maintained Action](https://raw.githubusercontent.com/step-security/maintained-actions-assets/main/assets/maintained-action-banner.png)](https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions)
 
-<p style="text-align: center;">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-dark.svg">
-    <img alt="Nx - Smart Repos · Fast Builds" src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-light.svg" width="100%">
-  </picture>
-</p>
+<p style="text-align: center;"><img src=".github/assets/nx.png" 
+width="100%" alt="Nx - Smart, Extensible Build Framework"></p>
 
 <h1 align="center">Set SHAs Action</h1>
 
@@ -13,12 +9,11 @@
 
 - [Example Usage](#example-usage)
 - [Configuration Options](#configuration-options)
+- [Permissions in v2+](#permissions-in-v2)
 - [Self-hosted runners](#self-hosted-runners)
 - [Background](#background)
   - [Problem](#problem)
 - [License](#license)
-
-**NOTE:** This documentation is for version `2.x.x` and later which now uses the GitHub API to track successful workflows. You can find documentation for version `1.x.x` which used GIT tags [here](https://github.com/step-security/nx-set-shas/blob/v1/README.md).
 
 ## Example Usage
 
@@ -38,7 +33,6 @@ jobs:
         with:
           # We need to fetch all branches and commits so that Nx affected has a base to compare against.
           fetch-depth: 0
-          filter: tree:0 # Optional, but recommended: reduce the size of the checkout with tree filtering, see https://github.blog/open-source/git/get-up-to-speed-with-partial-clone-and-shallow-clone/
 
       # In any subsequent steps within this job (myjob) we can reference the resolved SHAs
       # using either the step outputs or environment variables:
@@ -47,7 +41,7 @@ jobs:
       # OPTION 1) Environment variables
       # ===========================================================================
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: step-security/nx-set-shas@v5
+        uses: step-security/nx-set-shas@v4
 
       - run: |
           echo "BASE: ${{ env.NX_BASE }}"
@@ -58,7 +52,7 @@ jobs:
       # ===========================================================================
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         id: setSHAs
-        uses: step-security/nx-set-shas@v5
+        uses: step-security/nx-set-shas@v4
 
       - run: |
           echo "BASE: ${{ steps.setSHAs.outputs.base }}"
@@ -74,7 +68,7 @@ jobs:
 <!-- start configuration-options -->
 
 ```yaml
-- uses: step-security/nx-set-shas@v5
+- uses: step-security/nx-set-shas@v4
   with:
     # The GitHub token used to perform git operations
     #
@@ -119,14 +113,28 @@ jobs:
     # E.g. 'ci.yml'. If not provided, current workflow id will be used
     #
     workflow-id: ''
-
-    # When using merge-group, use the previous commit in the group as the base SHA.
-    #
-    # Default: true
-    use-previous-merge-group-commit: ''
 ```
 
 <!-- end configuration-options -->
+
+## Permissions in v2+
+
+This Action uses Github API to find the last successful workflow run. If your `GITHUB_TOKEN` has restrictions set please ensure you override them for the workflow to enable read access to `actions` and `contents`. If you are using the action with `merge queues` you will need to enable also `pull-request` permission:
+
+<!-- start permissions-in-v2 -->
+
+```yaml
+jobs:
+  myjob:
+    runs-on: ubuntu-latest
+    name: My Job
+    permissions:
+      contents: 'read'
+      actions: 'read'
+      pull-requests: 'read'
+```
+
+<!-- end permissions-in-v2 -->
 
 ## Self-hosted runners
 
@@ -147,7 +155,6 @@ jobs:
         with:
           # We need to fetch all branches and commits so that Nx affected has a base to compare against.
           fetch-depth: 0
-          filter: tree:0 # Optional, but recommended: reduce the size of the checkout with tree filtering, see https://github.blog/open-source/git/get-up-to-speed-with-partial-clone-and-shallow-clone/
 
       # Mark your git directory as safe
       - name: Set Directory as Safe
@@ -156,7 +163,7 @@ jobs:
         shell: bash
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: step-security/nx-set-shas@v5
+        uses: step-security/nx-set-shas@v4
 
       - run: |
           echo "BASE: ${{ env.NX_BASE }}"
