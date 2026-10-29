@@ -15,14 +15,7 @@ on:
         description: "Node.js version to use"
         required: false
         default: "24"
-      script:
-        description: "Build script to bundle the action"
-        required: false
-        default: "yarn build"
-      package_manager:
-        description: "Package manager to use"
-        required: false
-        default: "yarn"
+
   schedule:
     - cron: "0 0 * * 1"
 
