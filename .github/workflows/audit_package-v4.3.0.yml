@@ -19,6 +19,11 @@ on:
         description: "Package manager to use"
         required: false
         default: "yarn"
+      node_version:
+        description: "Node.js version to use"
+        required: false
+        default: "24"
+
   schedule:
     - cron: "0 0 * * 1"
 
@@ -27,9 +32,10 @@ jobs:
     uses: step-security/reusable-workflows/.github/workflows/audit_fix.yml@v1
     with:
       force: ${{ inputs.force || false }}
-      base_branch: ${{ inputs.base_branch || 'main' }}
+      base_branch: ${{ inputs.base_branch || 'v4.3.0-main' }}
       script: ${{ inputs.script }}
       package_manager: ${{ inputs.package_manager }}
+      node_version: ${{ inputs.node_version || '24' }}
 
 permissions:
   contents: write
