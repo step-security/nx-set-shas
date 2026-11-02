@@ -24,11 +24,11 @@ jobs:
         shell: bash
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         name: Checkout [Pull Request]
         if: ${{ github.event_name == 'pull_request' }}
         with:
@@ -36,15 +36,13 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           # We need to fetch all branches and commits so that Nx affected has a base to compare against.
           fetch-depth: 0
-          filter: tree:0
 
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         name: Checkout [Default Branch]
         if: ${{ github.event_name != 'pull_request' }}
         with:
           # We need to fetch all branches and commits so that Nx affected has a base to compare against.
           fetch-depth: 0
-          filter: tree:0
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: ./
@@ -53,7 +51,6 @@ jobs:
 
       - name: Verify default PR Workflow
         if: ${{ github.event_name == 'pull_request' }}
-        # Use node for this to be most representative of the user's runtime environment
         run: |
           BASE_SHA=$(echo $(git merge-base origin/${{github.base_ref}} HEAD))
           HEAD_SHA=$(git rev-parse HEAD)
@@ -62,7 +59,6 @@ jobs:
 
       - name: Verify default Push Workflow
         if: ${{ github.event_name != 'pull_request' }}
-        # Use node for this to be most representative of the user's runtime environment
         run: |
           if git merge-base --is-ancestor $NX_BASE HEAD; then
             BASE_SHA=$NX_BASE;
